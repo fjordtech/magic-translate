@@ -9,16 +9,18 @@ export const getAllCards = () => {
     })
 }
 
-export const getCardByName = async (cardName: string) => {
-    try{
-        const res = await axios.get(baseUrl + `?name=${cardName}`)
+export const getCardByName = (cardName: string) => {
+        // return await axios.get(baseUrl + `?name=${cardName}`)
+        axios.get(baseUrl + `?name=${cardName}`).then(res => {
+            const test = res.data;
+            return test.cards[0].originalText
+
+        })
         // if(res.data.cards[0].foreignNames.filter(x => x.language =='Portuguese (Brazil)') === []){
-        return res.data.cards[1].foreignNames.filter(x => x.language =='Portuguese (Brazil)')[0].text
+        console.log(res.data.cards[1].foreignNames.filter(x => x.language =='Portuguese (Brazil)'))
+        // return res.data.cards[1].foreignNames.filter(x => x.language =='Portuguese (Brazil)')
         // return res.data.cards[1].foreignNames.filter(x => x.language =='Portuguese (Brazil)')
         // }
         // return res.data.cards[0].foreignNames.filter(x => x.language =='Portuguese (Brazil)')        
-    }
-    catch (err){
-        console.error(err);
-    }
+    
 }
