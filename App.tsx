@@ -5,14 +5,38 @@ import logo from './assets/magic-logo.png'
 import axios from 'axios';
 
 export default function App() {
-  const [text, onChangeText] = useState("");
-  // const [card, setCard] = useState<any>('');
+  const [text, onChangeText] = useState('');
+  const [card, setCard] = useState<any>('');
+  const [showImage, setShowImage] = useState(false);
   const [cardTranslated, setCardTranslated] = useState<any>('');
   const baseUrl = 'https://api.magicthegathering.io/v1/cards';
 
+
+  const toggleImage = () => {
+    setShowImage(!showImage)
+  }
+
   const findCard = () => {
+    // Pacifism
+    // Crypt Ghast
+    // Duress
+
     axios.get(baseUrl + `?name=${text}`).then(res => {
-      setCardTranslated(res.data.cards[1].foreignNames.filter(x => x.language =='Portuguese (Brazil)')[0].text)
+      const cardFound = res.data.cards
+        .filter(card => !!card.foreignNames)
+        .find(card => {
+          return card.foreignNames.find(names => names.language === 'Portuguese (Brazil)')
+        })
+
+      if(!cardFound){
+        setCardTranslated('Sem tradução pt-BR')
+        return
+      }
+
+      const translation = cardFound.foreignNames.find(names => names.language === 'Portuguese (Brazil)')
+
+      setCard(cardFound)
+      setCardTranslated(translation.text)
     })
   }
 
@@ -22,22 +46,39 @@ export default function App() {
       <Image source={logo} style={styles.image} /> 
       <TextInput
         style={styles.input}
+        value={text}
         onChangeText={onChangeText}
         placeholder="Digite o nome da carta"
       />
-		<TouchableOpacity
-			style={styles.button}
-			onPress={findCard}>
-      <Text>Buscar</Text>
-    </TouchableOpacity>
+
+      <View style={styles.groupButtons}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={findCard}>
+          <Text>Buscar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={toggleImage}>
+          <Text>{ showImage ? 'Ver Texto' : 'Ver Imagem' }</Text>
+        </TouchableOpacity>
+      </View>
+		
     </View>
 
-		<View style={styles.card}>
-			<Text>
-				{cardTranslated}
-			</Text>
-		</View>
-		<StatusBar style="auto" />
+    {showImage ? (
+      <View>
+        <Image source={card.imageUrl} style={styles.cardImage}/>
+      </View>
+    ) : (
+      <View style={styles.card}>
+        <Text placeholder='Digite o nome da carta...'>
+          {cardTranslated}
+        </Text>
+      </View>
+    )}
+      <StatusBar style="auto" />
     </View>
   );
 }
@@ -74,8 +115,9 @@ const styles = StyleSheet.create({
   },
   card: {
     height: '25%',
-    width: '50%',
+    width: '80%',
     borderColor: '#000',
+    padding: 10,
     borderWidth: 2,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
@@ -84,6 +126,16 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '100%',
     height: 120
+  },
+  cardImage: {
+    width: 223,
+    height: 310,
+    borderColor: '#000',
+    borderWidth: 2,
+    borderRadius: 10,
+  },
+  groupButtons: {
+    flexDirection: 'row',
+    gap: 20,
   }
-    
 });
