@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, TouchableOpacity, Text, View, TextInput, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, View, TextInput, Image, KeyboardAvoidingView } from 'react-native';
 
 import api from './services/api'
 
@@ -33,8 +33,8 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-    <View style={styles.imageContainer}>
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}    >
+      <View style={styles.imageContainer}>
       <Image source={logo} style={styles.image} /> 
       <TextInput
         style={styles.input}
@@ -69,7 +69,7 @@ export default function App() {
       </View>
     )}
       <StatusBar style="auto" />
-    </View>
+  </KeyboardAvoidingView>
   );
 }
 
