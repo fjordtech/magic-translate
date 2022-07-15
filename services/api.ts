@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-    baseURL: 'https://api.magicthegathering.io/v1'
+    baseURL: 'https://api.scryfall.com'    
 })
 
 export default api

@@ -15,33 +15,21 @@ export default function App() {
 
   // Pacifism
   // Crypt Ghast
-  // Duress
+  // Duress 
 
   const toggleImage = () => {
     setShowImage(!showImage)
   }
 
-  const findCard = async () => {
+  const findCard = async (cardName: string) => {
     if(!text.trim()) return
-    const { data } = await api.get('cards', { 
-      params: {
-        name: text
-      }
-     })
-    const cardFound = data.cards
-      .filter((card: any) => !!card.foreignNames)
-      .find((card: any) => {
-        return card.foreignNames.find((names: any) => names.language === 'Portuguese (Brazil)')
-      })
-
+    const { data } = await api.get(`/cards/search?q=${cardName}%20lang:pt`)
+    const cardFound = data.data[0];
+    setCard(cardFound)    
     if(!cardFound){
       setCard({ text: 'Sem tradução pt-BR', imageUrl: null })
       return
     }
-
-    let translatedCard = cardFound.foreignNames.find((names: any) => names.language === 'Portuguese (Brazil)')
-
-    setCard(translatedCard)
   }
 
   return (
@@ -58,7 +46,7 @@ export default function App() {
       <View style={styles.groupButtons}>
         <TouchableOpacity
           style={styles.button}
-          onPress={findCard}>
+          onPress={() => findCard(text)}>
           <Text>Buscar</Text>
         </TouchableOpacity>
 
@@ -72,11 +60,11 @@ export default function App() {
     </View>
 
     {showImage ? (      
-        <Image source={{ uri: card.imageUrl }} style={styles.cardImage}/>
+        <Image source={{ uri: card.image_uris.normal }} style={styles.cardImage}/>
     ) : (
       <View style={styles.card}>
         <Text>
-          {card.text}
+          {card.printed_text}
         </Text>
       </View>
     )}
@@ -113,7 +101,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#DDDDDD",
     padding: 10,
     width: 125,
-    borderRadius: 10
+    borderRadius: 10,
+    marginLeft: 10,
   },
   card: {
     minHeight: '25%',
@@ -138,6 +127,5 @@ const styles = StyleSheet.create({
   },
   groupButtons: {
     flexDirection: 'row',
-    gap: 20,
   }
 });
