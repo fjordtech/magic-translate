@@ -28,7 +28,7 @@ export default function App() {
     })
     const [cardFound] = data.data;
     if(!cardFound){
-      setCard({ text: 'Sem tradução pt-BR', imageUrl: null })
+      setCard({ printed_text: 'Sem tradução pt-BR', image_uris: { normal: null } })
       return
     }
 
