@@ -1,19 +1,35 @@
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, TouchableOpacity, Text, View, TextInput, Image } from 'react-native';
-import { useEffect, useState } from 'react';
-import logo from './assets/magic-logo.png'
+
+import api from './services/api'
+
 import axios from 'axios';
 
-export default function App() {
-  const [text, onChangeText] = useState("");
-  // const [card, setCard] = useState<any>('');
-  const [cardTranslated, setCardTranslated] = useState<any>('');
-  const baseUrl = 'https://api.magicthegathering.io/v1/cards';
+import logo from './assets/magic-logo.png'
 
-  const findCard = () => {
-    axios.get(baseUrl + `?name=${text}`).then(res => {
-      setCardTranslated(res.data.cards[1].foreignNames.filter(x => x.language =='Portuguese (Brazil)')[0].text)
-    })
+export default function App() {
+  const [text, onChangeText] = useState('');
+  const [card, setCard] = useState<any>('');
+  const [showImage, setShowImage] = useState(false);
+
+  // Pacifism
+  // Crypt Ghast
+  // Duress 
+
+  const toggleImage = () => {
+    setShowImage(!showImage)
+  }
+
+  const findCard = async (cardName: string) => {
+    if(!text.trim()) return
+    const { data } = await api.get(`/cards/search?q=${cardName}%20lang:pt`)
+    const cardFound = data.data[0];
+    setCard(cardFound)    
+    if(!cardFound){
+      setCard({ text: 'Sem tradução pt-BR', imageUrl: null })
+      return
+    }
   }
 
   return (
@@ -22,22 +38,37 @@ export default function App() {
       <Image source={logo} style={styles.image} /> 
       <TextInput
         style={styles.input}
+        value={text}
         onChangeText={onChangeText}
-        placeholder="Digite o nome da carta"
+        placeholder="Digite o nome da carta..."
       />
-		<TouchableOpacity
-			style={styles.button}
-			onPress={findCard}>
-      <Text>Buscar</Text>
-    </TouchableOpacity>
+
+      <View style={styles.groupButtons}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => findCard(text)}>
+          <Text>Buscar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={toggleImage}>
+          <Text>{ showImage ? 'Ver Texto' : 'Ver Imagem' }</Text>
+        </TouchableOpacity>
+      </View>
+		
     </View>
 
-		<View style={styles.card}>
-			<Text>
-				{cardTranslated}
-			</Text>
-		</View>
-		<StatusBar style="auto" />
+    {showImage ? (      
+        <Image source={{ uri: card.image_uris.normal }} style={styles.cardImage}/>
+    ) : (
+      <View style={styles.card}>
+        <Text>
+          {card.printed_text}
+        </Text>
+      </View>
+    )}
+      <StatusBar style="auto" />
     </View>
   );
 }
@@ -70,12 +101,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#DDDDDD",
     padding: 10,
     width: 125,
-    borderRadius: 10
+    borderRadius: 10,
+    marginLeft: 10,
   },
   card: {
-    height: '25%',
-    width: '50%',
+    minHeight: '25%',
+    width: '80%',
     borderColor: '#000',
+    padding: 10,
     borderWidth: 2,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
@@ -84,6 +117,15 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '100%',
     height: 120
+  },
+  cardImage: {
+    width: 223,
+    height: 310,
+    borderColor: '#000',
+    borderWidth: 2,
+    borderRadius: 10,
+  },
+  groupButtons: {
+    flexDirection: 'row',
   }
-    
 });
