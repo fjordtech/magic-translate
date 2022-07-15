@@ -1,43 +1,47 @@
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, TouchableOpacity, Text, View, TextInput, Image } from 'react-native';
-import { useEffect, useState } from 'react';
-import logo from './assets/magic-logo.png'
+
+import api from './services/api'
+
 import axios from 'axios';
+
+import logo from './assets/magic-logo.png'
 
 export default function App() {
   const [text, onChangeText] = useState('');
   const [card, setCard] = useState<any>('');
   const [showImage, setShowImage] = useState(false);
-  const [cardTranslated, setCardTranslated] = useState<any>('');
-  const baseUrl = 'https://api.magicthegathering.io/v1/cards';
 
+  // Pacifism
+  // Crypt Ghast
+  // Duress
 
   const toggleImage = () => {
     setShowImage(!showImage)
   }
 
-  const findCard = () => {
-    // Pacifism
-    // Crypt Ghast
-    // Duress
-
-    axios.get(baseUrl + `?name=${text}`).then(res => {
-      const cardFound = res.data.cards
-        .filter(card => !!card.foreignNames)
-        .find(card => {
-          return card.foreignNames.find(names => names.language === 'Portuguese (Brazil)')
-        })
-
-      if(!cardFound){
-        setCardTranslated('Sem tradução pt-BR')
-        return
+  const findCard = async () => {
+    if(!text.trim()) return
+    const { data } = await api.get('cards', { 
+      params: {
+        name: text
       }
+     })
+    const cardFound = data.cards
+      .filter((card: any) => !!card.foreignNames)
+      .find((card: any) => {
+        return card.foreignNames.find((names: any) => names.language === 'Portuguese (Brazil)')
+      })
 
-      const translation = cardFound.foreignNames.find(names => names.language === 'Portuguese (Brazil)')
+    if(!cardFound){
+      setCard({ text: 'Sem tradução pt-BR', imageUrl: null })
+      return
+    }
 
-      setCard(cardFound)
-      setCardTranslated(translation.text)
-    })
+    let translatedCard = cardFound.foreignNames.find((names: any) => names.language === 'Portuguese (Brazil)')
+
+    setCard(translatedCard)
   }
 
   return (
@@ -48,7 +52,7 @@ export default function App() {
         style={styles.input}
         value={text}
         onChangeText={onChangeText}
-        placeholder="Digite o nome da carta"
+        placeholder="Digite o nome da carta..."
       />
 
       <View style={styles.groupButtons}>
@@ -67,14 +71,12 @@ export default function App() {
 		
     </View>
 
-    {showImage ? (
-      <View>
-        <Image source={card.imageUrl} style={styles.cardImage}/>
-      </View>
+    {showImage ? (      
+        <Image source={{ uri: card.imageUrl }} style={styles.cardImage}/>
     ) : (
       <View style={styles.card}>
-        <Text placeholder='Digite o nome da carta...'>
-          {cardTranslated}
+        <Text>
+          {card.text}
         </Text>
       </View>
     )}
@@ -114,7 +116,7 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   card: {
-    height: '25%',
+    minHeight: '25%',
     width: '80%',
     borderColor: '#000',
     padding: 10,
