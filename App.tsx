@@ -4,8 +4,6 @@ import { StyleSheet, TouchableOpacity, Text, View, TextInput, Image } from 'reac
 
 import api from './services/api'
 
-import axios from 'axios';
-
 import logo from './assets/magic-logo.png'
 
 export default function App() {
@@ -21,15 +19,20 @@ export default function App() {
     setShowImage(!showImage)
   }
 
-  const findCard = async (cardName: string) => {
+  const findCard = async () => {
     if(!text.trim()) return
-    const { data } = await api.get(`/cards/search?q=${cardName}%20lang:pt`)
-    const cardFound = data.data[0];
-    setCard(cardFound)    
+    const { data } = await api.get('/cards/search', {
+      params: {
+        q: `${text} lang:pt`
+      }
+    })
+    const [cardFound] = data.data;
     if(!cardFound){
       setCard({ text: 'Sem tradução pt-BR', imageUrl: null })
       return
     }
+
+    setCard(cardFound)    
   }
 
   return (
@@ -46,7 +49,7 @@ export default function App() {
       <View style={styles.groupButtons}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => findCard(text)}>
+          onPress={findCard}>
           <Text>Buscar</Text>
         </TouchableOpacity>
 
