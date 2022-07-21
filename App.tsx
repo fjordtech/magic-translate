@@ -47,10 +47,6 @@ export default function App() {
 
       setCard({ printed_text: message, image_uris: { normal: null } })
     })
-
-    
-    
-    
   }
 
   return (
