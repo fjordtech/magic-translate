@@ -2,7 +2,7 @@ import React from 'react'
 
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
-import Home from './src/pages/Home'
+import Routes from './src/routes/app.routes'
 
 const theme = {
   ...DefaultTheme,
@@ -19,7 +19,7 @@ const theme = {
 const App: React.FC = () => {
   return (
     <PaperProvider theme={theme}>
-      <Home />
+      <Routes />
     </PaperProvider>
   )
 }
