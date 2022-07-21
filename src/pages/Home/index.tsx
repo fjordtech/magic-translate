@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, TouchableOpacity, Text, View, TextInput, Image } from 'react-native';
 
-import api from '../../services/api'
+import api from '@/services/api'
 
-import logo from '../../assets/magic-logo.png'
+import logo from '@/assets/magic-logo.png'
 
 export default function App() {
   const [text, onChangeText] = useState('');
