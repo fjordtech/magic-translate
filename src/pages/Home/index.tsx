@@ -18,6 +18,9 @@ export default function App() {
   // Crypt Ghast
   // Duress 
 
+  // Energy Flux // without translate
+  // Nissa, Vastwood Seer // with back face // current: get the first face
+
   const toggleImage = () => {
     if(!card.image_uris.normal) return
     setShowImage(!showImage)
@@ -33,11 +36,26 @@ export default function App() {
       }
     })
     .then(({ data }) => {
-      const [cardFound] = data.data;
-      if(!cardFound){
+      let [cardFound] = data.data;
+      if(!cardFound || !cardFound?.printed_text){
         setCard({ printed_text: 'Carta sem tradução pt-BR.', image_uris: { normal: null } })
         return
       }
+
+      if(!!cardFound.card_faces){
+        // TODO: Nissa, Vastwood Seer // card with two faces
+        // get the two faces of this card (?)
+        const [frontFace] = cardFound.card_faces
+
+        if(!frontFace){
+          setCard({ printed_text: 'Algo deu errado! Tente novamente.', image_uris: { normal: null } })
+          return 
+        }
+
+        cardFound = frontFace
+      }
+
+      // cardFound.card_faces
 
       setCard(cardFound)
       storeCard({
@@ -46,12 +64,15 @@ export default function App() {
         text: cardFound.printed_text,
       })    
     })
-    .catch(({ response }) => {
-      const { status } = response
-
+    .catch((error) => {
       let message = 'Algo deu errado! Tente novamente.'
-      if(status === 404){
-        message = 'Carta não encontrada! Tente novamente.'
+
+      if(error.response) {
+        const { status } = error.response
+  
+        if(status === 404){
+          message = 'Carta não encontrada! Tente novamente.'
+        }
       }
 
       setCard({ printed_text: message, image_uris: { normal: null } })

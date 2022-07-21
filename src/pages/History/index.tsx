@@ -56,6 +56,13 @@ const History = (props: any) => {
     setFabOpen(false)
   }
 
+  const renderEmptyState = () => (
+    <View style={styles.emptyContent}>
+        <Ionicons name="sad-outline" size={42} color="#838383" />
+        <Text style={styles.emptyText}>Não há histórico de tradução.</Text>    
+    </View>
+  )
+
   return (
     <Provider>
         <SafeAreaView style={{ flex: 1 }}>
@@ -86,6 +93,7 @@ const History = (props: any) => {
                 showsVerticalScrollIndicator={false}
                 data={cards}
                 keyExtractor={item => item.name}
+                ListEmptyComponent={renderEmptyState()}
                 renderItem={({ item }: any) => (
                     <View style={styles.item}>
                         <View style={styles.info}>
@@ -146,5 +154,15 @@ const styles = StyleSheet.create({
         margin: 16,
         right: 0,
         bottom: 0,
+    },
+    emptyText: {
+        color: '#838383',
+        textAlign: 'center',
+        fontSize: 16,
+    },
+    emptyContent: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 })
