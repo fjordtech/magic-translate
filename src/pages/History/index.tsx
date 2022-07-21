@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons'; 
 
 import { View, SafeAreaView, FlatList, Image, StyleSheet } from 'react-native';
 
 import { Text, Button, Portal, Modal, Card } from 'react-native-paper';
+
+import { listCards, deleteCard } from '@/services/history';
 
 interface CardProps {
     name: string,
@@ -11,22 +13,17 @@ interface CardProps {
     text: string,
 }
 
-const cards: CardProps[] = [
-    {
-        name: 'Pacifism / Pacifismo',
-        image: 'https://c1.scryfall.com/file/scryfall-cards/normal/front/7/e/7ede32f0-9b03-4a0a-b3f8-56d68ae618fc.jpg?1645762811',
-        text: 'Encantar criatura A criatura encantada não pode atacar nem bloquear.'
-    },
-    {
-        name: 'Duress / Coagir',
-        image: 'https://c1.scryfall.com/file/scryfall-cards/normal/front/e/7/e7d653ec-dc63-47a6-8913-22ded8fe3cde.jpg?1646244861',
-        text: 'Encantar criatura A criatura encantada não pode atacar nem bloquear.'
-    },
-]
-
-const History = () => {
+const History = (props: any) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [currentCard, setCurrentCard] = useState<CardProps>()
+  const [cards, setCards] = useState<CardProps[]>([])
+
+  useEffect(() => {
+    listCards()
+    .then((list) => {
+        setCards(list)
+    })
+  }, [props])
 
   const toggleModal = () => {
     setModalVisible(!modalVisible)
@@ -35,6 +32,11 @@ const History = () => {
   const handleCurrentCard = (card: CardProps) => {
     setCurrentCard(card)
     toggleModal()
+  }
+
+  const handleDeleteCard = (card: CardProps) => {
+    deleteCard(card)
+    .then((newList) => setCards(newList))
   }
 
   return (
@@ -59,8 +61,11 @@ const History = () => {
                     </View>
             
                     <View>
-                        <Button mode="contained" onPress={() => handleCurrentCard(item)}>
+                        <Button style={{ marginBottom: 10 }} mode="contained" onPress={() => handleCurrentCard(item)}>
                             <Ionicons name="image-outline" size={24} color="black" />
+                        </Button> 
+                        <Button mode="contained" onPress={() => handleDeleteCard(item)}>
+                            <Ionicons name="trash-outline" size={24} color="black" />
                         </Button> 
                     </View>
                 </View>
@@ -94,6 +99,7 @@ const styles = StyleSheet.create({
     },
     name: {
         fontSize: 18,
+        textTransform: 'capitalize',
         fontWeight: 'bold',
         marginBottom: 5,
     },

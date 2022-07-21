@@ -4,6 +4,7 @@ import { Button, TextInput, Card, Paragraph } from 'react-native-paper';
 import { StyleSheet, Text, View, Image } from 'react-native';
 
 import api from '@/services/api'
+import { storeCard } from '@/services/history'
 
 import logo from '@/assets/magic-logo.png'
 
@@ -38,7 +39,12 @@ export default function App() {
         return
       }
 
-      setCard(cardFound)    
+      setCard(cardFound)
+      storeCard({
+        name: `${text} / ${cardFound.printed_name}`,
+        image: cardFound.image_uris.normal,
+        text: cardFound.printed_text,
+      })    
     })
     .catch(({ response }) => {
       const { status } = response
