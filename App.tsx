@@ -8,7 +8,7 @@ import logo from './assets/magic-logo.png'
 
 export default function App() {
   const [text, onChangeText] = useState('');
-  const [card, setCard] = useState<any>('');
+  const [card, setCard] = useState<any>({ printed_text: '', image_uris: { normal: null } });
   const [showImage, setShowImage] = useState(false);
 
   // Pacifism
@@ -16,23 +16,41 @@ export default function App() {
   // Duress 
 
   const toggleImage = () => {
+    if(!card.image_uris.normal) return
     setShowImage(!showImage)
   }
 
   const findCard = async () => {
     if(!text.trim()) return
-    const { data } = await api.get('/cards/search', {
+
+    api.get('/cards/search', {
       params: {
         q: `${text} lang:pt`
       }
     })
-    const [cardFound] = data.data;
-    if(!cardFound){
-      setCard({ printed_text: 'Sem tradução pt-BR', image_uris: { normal: null } })
-      return
-    }
+    .then(({ data }) => {
+      const [cardFound] = data.data;
+      if(!cardFound){
+        setCard({ printed_text: 'Carta sem tradução pt-BR.', image_uris: { normal: null } })
+        return
+      }
 
-    setCard(cardFound)    
+      setCard(cardFound)    
+    })
+    .catch(({ response }) => {
+      const { status } = response
+
+      let message = 'Algo deu errado! Tente novamente.'
+      if(status === 404){
+        message = 'Carta não encontrada! Tente novamente.'
+      }
+
+      setCard({ printed_text: message, image_uris: { normal: null } })
+    })
+
+    
+    
+    
   }
 
   return (
