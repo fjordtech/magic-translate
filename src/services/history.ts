@@ -1,4 +1,4 @@
-import { storeData, getData } from '@/utils/storage'
+import { storeData, getData, clearData } from '@/utils/storage'
 
 interface CardProps {
     name: string,
@@ -42,8 +42,13 @@ const deleteCard = async (cardToDelete: CardProps) => {
     return await listCards()
 }
 
+const clearCardHistory = async () => {
+    return await clearData()
+}
+
 export {
     storeCard,
     listCards,
     deleteCard,
+    clearCardHistory,
 }
