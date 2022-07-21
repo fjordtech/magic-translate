@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, TouchableOpacity, Text, View, TextInput, Image } from 'react-native';
+import { Button, TextInput, Card, Paragraph } from 'react-native-paper';
+import { StyleSheet, Text, View, Image } from 'react-native';
 
 import api from '@/services/api'
 
@@ -10,6 +11,7 @@ export default function App() {
   const [text, onChangeText] = useState('');
   const [card, setCard] = useState<any>({ printed_text: '', image_uris: { normal: null } });
   const [showImage, setShowImage] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Pacifism
   // Crypt Ghast
@@ -21,8 +23,9 @@ export default function App() {
   }
 
   const findCard = async () => {
-    if(!text.trim()) return
+    if(!text.trim() || loading) return
 
+    setLoading(true)
     api.get('/cards/search', {
       params: {
         q: `${text} lang:pt`
@@ -47,6 +50,7 @@ export default function App() {
 
       setCard({ printed_text: message, image_uris: { normal: null } })
     })
+    .finally(() => setLoading(false))
   }
 
   return (
@@ -54,6 +58,7 @@ export default function App() {
     <View style={styles.imageContainer}>
       <Image source={logo} style={styles.image} /> 
       <TextInput
+        label="Nome da Carta"
         style={styles.input}
         value={text}
         onChangeText={onChangeText}
@@ -61,29 +66,26 @@ export default function App() {
       />
 
       <View style={styles.groupButtons}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={findCard}>
-          <Text>Buscar</Text>
-        </TouchableOpacity>
+        <Button icon="magnify" mode="contained" onPress={findCard} loading={loading}>
+          Buscar
+        </Button> 
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={toggleImage}>
-          <Text>{ showImage ? 'Ver Texto' : 'Ver Imagem' }</Text>
-        </TouchableOpacity>
+        <Button style={{ marginLeft: 10 }} icon="image-area" mode="contained" onPress={toggleImage}>
+          { showImage ? 'Ver Texto' : 'Ver Imagem' }
+        </Button>
       </View>
-		
-    </View>
 
+    </View>
     {showImage ? (      
         <Image source={{ uri: card.image_uris.normal }} style={styles.cardImage}/>
-    ) : (
-      <View style={styles.card}>
-        <Text>
-          {card.printed_text}
-        </Text>
-      </View>
+    ) : !!card.printed_text && (
+      <Card style={{ maxHeight: 200 }} elevation={3} mode='elevated'>
+        <Card.Content>
+          <Paragraph>
+            {card.printed_text}
+          </Paragraph>
+        </Card.Content>
+      </Card>
     )}
       <StatusBar style="auto" />
     </View>
@@ -94,9 +96,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    paddingTop: 40,
     backgroundColor: '#eee',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   imageContainer: {
     alignItems: 'center',
@@ -106,29 +109,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
   },
   input: {
-    height: 40,
+    margin: 12,
     marginTop: 50,
     width: '80%',
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-  button: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10,
-    width: 125,
-    borderRadius: 10,
-    marginLeft: 10,
-  },
-  card: {
-    minHeight: '25%',
-    width: '80%',
-    borderColor: '#000',
-    padding: 10,
-    borderWidth: 2,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
   },
   image: {
     padding: 10,
