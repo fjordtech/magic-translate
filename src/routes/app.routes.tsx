@@ -10,7 +10,7 @@ const AppRoutes = () => {
 
   const routes = [
     { key: 'home', title: 'Home' },
-    { key: 'list-circle', title: 'History'},
+    { key: 'list-circle', title: 'Histórico'},
   ];
 
   const renderScene = BottomNavigation.SceneMap({
