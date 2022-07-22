@@ -26,6 +26,11 @@ export default function App() {
     setShowImage(!showImage)
   }
 
+  const renderError = (message = 'Algo deu errado! Tente novamente.') => {
+    setShowImage(false)
+    setCard({ printed_text: message, image_uris: { normal: null } })
+  }
+
   const findCard = async () => {
     if(!text.trim() || loading) return
 
@@ -37,8 +42,8 @@ export default function App() {
     })
     .then(({ data }) => {
       let [cardFound] = data.data;
-      if(!cardFound || !cardFound?.printed_text){
-        setCard({ printed_text: 'Carta sem tradução pt-BR.', image_uris: { normal: null } })
+      if(!cardFound || (!cardFound?.printed_text && !cardFound?.card_faces)){
+        renderError('Carta sem tradução pt-BR.')
         return
       }
 
@@ -48,7 +53,7 @@ export default function App() {
         const [frontFace] = cardFound.card_faces
 
         if(!frontFace){
-          setCard({ printed_text: 'Algo deu errado! Tente novamente.', image_uris: { normal: null } })
+          renderError()
           return 
         }
 
@@ -59,7 +64,7 @@ export default function App() {
 
       setCard(cardFound)
       storeCard({
-        name: `${text} / ${cardFound.printed_name}`,
+        name: `${text} / ${cardFound.printed_name}`.toLocaleLowerCase(),
         image: cardFound.image_uris.normal,
         text: cardFound.printed_text,
       })    
@@ -75,7 +80,7 @@ export default function App() {
         }
       }
 
-      setCard({ printed_text: message, image_uris: { normal: null } })
+      renderError(message)
     })
     .finally(() => setLoading(false))
   }
