@@ -94,8 +94,8 @@ const History = (props: any) => {
                 data={cards}
                 keyExtractor={item => item.name}
                 ListEmptyComponent={renderEmptyState()}
-                renderItem={({ item }: any) => (
-                    <View style={styles.item}>
+                renderItem={({ item, index }: any) => (
+                    <View style={[styles.item, cards.length === index+1 ? styles.lastItem : null]}>
                         <View style={styles.info}>
                             <Text style={styles.name}>{item.name}</Text>
                             <Text>{item.text}</Text>
@@ -121,9 +121,9 @@ export default History;
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         padding: 20,
         paddingTop: 40,
-        flex: 1,
     },
     containerCard: {
         padding: 10,
@@ -134,6 +134,10 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#838383',
+    },
+    lastItem: {
+        borderBottomWidth: 0,
+        paddingBottom: 100,
     },
     info: {
         flex: 1,
