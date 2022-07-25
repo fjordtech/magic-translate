@@ -8,6 +8,8 @@ import { Text, Button, Portal, Modal, Card, FAB } from 'react-native-paper';
 import Provider from '@/components/PaperProvider'
 import { listCards, deleteCard, clearCardHistory } from '@/services/history';
 
+import { theme } from '@/components/PaperProvider';
+
 interface CardProps {
     name: string,
     image: string,
@@ -103,10 +105,10 @@ const History = (props: any) => {
                 
                         <View>
                             <Button style={{ marginBottom: 10 }} mode="contained" onPress={() => handleCurrentCard(item)}>
-                                <Ionicons name="image-outline" size={24} color="black" />
+                                <Ionicons name="image-outline" size={24} color={theme.colors.text} />
                             </Button> 
                             <Button mode="contained" onPress={() => handleDeleteCard(item)}>
-                                <Ionicons name="trash-outline" size={24} color="black" />
+                                <Ionicons name="trash-outline" size={24} color={theme.colors.text} />
                             </Button> 
                         </View>
                     </View>

@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Button, TextInput, Card, Paragraph } from 'react-native-paper';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { Button, TextInput, Card, Paragraph, Text } from 'react-native-paper';
+import { StyleSheet, View, Image } from 'react-native';
 
 import api from '@/services/api'
 import { storeCard } from '@/services/history'
 
-import logo from '@/assets/magic-logo.png'
+import { theme } from '@/components/PaperProvider';
+
+import logoLight from '@/assets/magic-logo.png'
+import logoDark from '@/assets/magic-logo-dark.png'
 
 export default function App() {
   const [text, onChangeText] = useState('');
@@ -88,12 +91,14 @@ export default function App() {
   return (
     <View style={styles.container}>
     <View style={styles.imageContainer}>
-      <Image source={logo} style={styles.image} /> 
+      <Image source={theme.dark ? logoDark : logoLight} style={styles.image} /> 
       <TextInput
-        label="Nome da Carta"
+        label={<Text>Nome da Carta</Text>}
+        dense
         style={styles.input}
         value={text}
         onChangeText={onChangeText}
+        placeholderTextColor={theme.colors.tertiary}
         placeholder="Digite o nome da carta..."
       />
 
@@ -111,7 +116,7 @@ export default function App() {
     {showImage ? (      
         <Image source={{ uri: card.image_uris.normal }} style={styles.cardImage}/>
     ) : !!card.printed_text && (
-      <Card style={{ maxHeight: 200 }} elevation={3} mode='elevated'>
+      <Card style={styles.card} elevation={3} mode='elevated'>
         <Card.Content>
           <Paragraph>
             {card.printed_text}
@@ -129,7 +134,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     paddingTop: 40,
-    backgroundColor: '#eee',
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
@@ -138,7 +142,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 20,
     width: '100%',
-    backgroundColor: '#eee',
   },
   input: {
     margin: 12,
@@ -149,6 +152,9 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '100%',
     height: 120
+  },
+  card: {
+    maxHeight: 200,
   },
   cardImage: {
     width: 223,

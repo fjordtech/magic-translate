@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons'; 
-import { BottomNavigation, Text } from 'react-native-paper';
+import { BottomNavigation, Text, withTheme } from 'react-native-paper';
 
 import Home from '@/pages/Home'
 import History from '@/pages/History'
@@ -30,4 +30,4 @@ const AppRoutes = () => {
   );
 };
 
-export default AppRoutes;
+export default withTheme(AppRoutes);
