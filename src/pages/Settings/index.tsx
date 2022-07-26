@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, FAB, RadioButton } from 'react-native-paper';
+import { Text, FAB, RadioButton, withTheme } from 'react-native-paper';
 
-import { theme } from '@/components/PaperProvider';
+import { usePaper, Scheme as ColorScheme } from '@/contexts/PaperProvider';
 
-const Settings = ({ navigation }: any) => {
-  const [checked, setChecked] = React.useState('auto');
+const Settings = ({ navigation, theme }: any) => {
+  const { currentTheme, setCurrentTheme } = usePaper()
+  const [checked, setChecked] = useState<ColorScheme>(currentTheme);
+
+  const handleChooseTheme = (value: ColorScheme) => {
+    setCurrentTheme(value)
+    setChecked(value)
+  }
 
   const themeList = [
     { name: 'Automático', value: 'auto' },
@@ -15,21 +21,21 @@ const Settings = ({ navigation }: any) => {
   
   const { navigate } = navigation
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <FAB
         icon="arrow-left"
         style={styles.fab}
         onPress={() => navigate('App')}
       />
 
-      <Text style={styles.title}>Esquema de cores</Text>
+      <Text style={[styles.title, { color: theme.colors.primary }]}>Esquema de cores</Text>
       
       { themeList.map(({ name, value }) => (
         <View style={styles.item} key={value}>
           <RadioButton
             value={value}
             status={ checked === value ? 'checked' : 'unchecked' }
-            onPress={() => setChecked(value)}
+            onPress={() => handleChooseTheme(value as ColorScheme)}
           />
           <Text style={styles.label}>{name}</Text>
         </View>
@@ -43,11 +49,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     paddingTop: 40,
-    backgroundColor: theme.colors.background,
     justifyContent: 'flex-start',
   },
   title: {
-    color: theme.colors.primary,
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 15,
@@ -68,4 +72,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Settings;
+export default withTheme(Settings);

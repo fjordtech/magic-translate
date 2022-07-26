@@ -5,10 +5,8 @@ import { View, SafeAreaView, FlatList, Image, StyleSheet } from 'react-native';
 
 import { Text, Button, Portal, Modal, Card, FAB } from 'react-native-paper';
 
-import Provider from '@/components/PaperProvider'
+import Provider from '@/contexts/PaperProvider'
 import { listCards, deleteCard, clearCardHistory } from '@/services/history';
-
-import { theme } from '@/components/PaperProvider';
 
 interface CardProps {
     name: string,
@@ -17,6 +15,7 @@ interface CardProps {
 }  
 
 const History = (props: any) => {
+  const { theme } = props
   const [modalVisible, setModalVisible] = useState(false)
   const [currentCard, setCurrentCard] = useState<CardProps>()
   const [cards, setCards] = useState<CardProps[]>([])
@@ -99,8 +98,8 @@ const History = (props: any) => {
                 renderItem={({ item, index }: any) => (
                     <View style={[styles.item, cards.length === index+1 ? styles.lastItem : null]}>
                         <View style={styles.info}>
-                            <Text style={styles.name}>{item.name}</Text>
-                            <Text>{item.text}</Text>
+                            <Text style={[styles.name, { color: theme.colors.text }]}>{item.name}</Text>
+                            <Text style={{ color: theme.colors.text }}>{item.text}</Text>
                         </View>
                 
                         <View>
@@ -118,8 +117,6 @@ const History = (props: any) => {
     </Provider>  
   )
 }
-
-export default History;
 
 const styles = StyleSheet.create({
     container: {
@@ -172,3 +169,5 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     }
 })
+
+export default History;

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import PaperProvider from '@/components/PaperProvider'
+import PaperProvider from '@/contexts/PaperProvider'
 
 import Routes from './src/routes/index.routes'
 

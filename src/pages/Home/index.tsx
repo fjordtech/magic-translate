@@ -6,12 +6,10 @@ import { StyleSheet, View, Image } from 'react-native';
 import api from '@/services/api'
 import { storeCard } from '@/services/history'
 
-import { theme } from '@/components/PaperProvider';
-
 import logoLight from '@/assets/magic-logo.png'
 import logoDark from '@/assets/magic-logo-dark.png'
 
-export default function Home({ navigate }: any) {
+function Home({ navigate, theme }: any) {
   const [text, onChangeText] = useState('');
   const [card, setCard] = useState<any>({ printed_text: '', image_uris: { normal: null } });
   const [showImage, setShowImage] = useState(false);
@@ -179,3 +177,5 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
 });
+
+export default Home;

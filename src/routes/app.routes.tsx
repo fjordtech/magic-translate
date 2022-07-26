@@ -5,7 +5,7 @@ import { BottomNavigation, Text, withTheme } from 'react-native-paper';
 import Home from '@/pages/Home'
 import History from '@/pages/History'
 
-const AppRoutes = ({ navigation } : any) => {
+const AppRoutes = ({ navigation, theme } : any) => {
   const [index, setIndex] = useState(0);
 
   const routes = [
@@ -21,9 +21,9 @@ const AppRoutes = ({ navigation } : any) => {
   const renderScene = ({ route }: any) => {
     switch (route.key) {
       case 'home':
-        return <Home navigate={navigation.navigate} />;
+        return <Home navigate={navigation.navigate} theme={theme} />;
       case 'list-circle':
-        return <History navigate={navigation.navigate} />;
+        return <History navigate={navigation.navigate} theme={theme} />;
     }
   }
 
