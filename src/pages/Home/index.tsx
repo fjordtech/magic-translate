@@ -98,7 +98,6 @@ function Home({ navigate, theme }: any) {
         <Image source={theme.dark ? logoDark : logoLight} style={styles.image} /> 
         <TextInput
           label={<Text>Nome da Carta</Text>}
-          dense
           style={styles.input}
           value={text}
           onChangeText={onChangeText}
