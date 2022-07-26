@@ -127,7 +127,7 @@ function Home({ navigate, theme }: any) {
           </Card.Content>
         </Card>
       )}
-        <StatusBar style="auto" />
+        <StatusBar style={theme.dark ? "light" : "dark"} />
     </View>
   );
 }
