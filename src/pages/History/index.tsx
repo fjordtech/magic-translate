@@ -103,10 +103,10 @@ const History = (props: any) => {
                         </View>
                 
                         <View>
-                            <Button style={{ marginBottom: 10 }} mode="contained" onPress={() => handleCurrentCard(item)}>
+                            <Button style={{ marginBottom: 10, backgroundColor: theme.colors.primary }} mode="contained" onPress={() => handleCurrentCard(item)}>
                                 <Ionicons name="image-outline" size={24} color={theme.colors.text} />
                             </Button> 
-                            <Button mode="contained" onPress={() => handleDeleteCard(item)}>
+                            <Button style={{ backgroundColor: theme.colors.primary }} mode="contained" onPress={() => handleDeleteCard(item)}>
                                 <Ionicons name="trash-outline" size={24} color={theme.colors.text} />
                             </Button> 
                         </View>
