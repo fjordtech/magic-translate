@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Button, TextInput, Card, Paragraph, Text } from 'react-native-paper';
+import { Button, TextInput, Card, Paragraph, Text, FAB } from 'react-native-paper';
 import { StyleSheet, View, Image } from 'react-native';
 
 import api from '@/services/api'
@@ -11,7 +11,7 @@ import { theme } from '@/components/PaperProvider';
 import logoLight from '@/assets/magic-logo.png'
 import logoDark from '@/assets/magic-logo-dark.png'
 
-export default function App() {
+export default function Home({ navigate }: any) {
   const [text, onChangeText] = useState('');
   const [card, setCard] = useState<any>({ printed_text: '', image_uris: { normal: null } });
   const [showImage, setShowImage] = useState(false);
@@ -90,41 +90,47 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-    <View style={styles.imageContainer}>
-      <Image source={theme.dark ? logoDark : logoLight} style={styles.image} /> 
-      <TextInput
-        label={<Text>Nome da Carta</Text>}
-        dense
-        style={styles.input}
-        value={text}
-        onChangeText={onChangeText}
-        placeholderTextColor={theme.colors.tertiary}
-        placeholder="Digite o nome da carta..."
+      <FAB
+        icon="cog"
+        style={styles.fab}
+        onPress={() => navigate('Settings')}
       />
 
-      <View style={styles.groupButtons}>
-        <Button icon="magnify" mode="contained" onPress={findCard} loading={loading}>
-          Buscar
-        </Button> 
+      <View style={styles.imageContainer}>
+        <Image source={theme.dark ? logoDark : logoLight} style={styles.image} /> 
+        <TextInput
+          label={<Text>Nome da Carta</Text>}
+          dense
+          style={styles.input}
+          value={text}
+          onChangeText={onChangeText}
+          placeholderTextColor={theme.colors.tertiary}
+          placeholder="Digite o nome da carta..."
+        />
 
-        <Button style={{ marginLeft: 10 }} icon="image-area" mode="contained" onPress={toggleImage}>
-          { showImage ? 'Ver Texto' : 'Ver Imagem' }
-        </Button>
+        <View style={styles.groupButtons}>
+          <Button icon="magnify" mode="contained" onPress={findCard} loading={loading}>
+            Buscar
+          </Button> 
+
+          <Button style={{ marginLeft: 10 }} icon="image-area" mode="contained" onPress={toggleImage}>
+            { showImage ? 'Ver Texto' : 'Ver Imagem' }
+          </Button>
+        </View>
+
       </View>
-
-    </View>
-    {showImage ? (      
-        <Image source={{ uri: card.image_uris.normal }} style={styles.cardImage}/>
-    ) : !!card.printed_text && (
-      <Card style={styles.card} elevation={3} mode='elevated'>
-        <Card.Content>
-          <Paragraph>
-            {card.printed_text}
-          </Paragraph>
-        </Card.Content>
-      </Card>
-    )}
-      <StatusBar style="auto" />
+      {showImage ? (      
+          <Image source={{ uri: card.image_uris.normal }} style={styles.cardImage}/>
+      ) : !!card.printed_text && (
+        <Card style={styles.card} elevation={3} mode='elevated'>
+          <Card.Content>
+            <Paragraph>
+              {card.printed_text}
+            </Paragraph>
+          </Card.Content>
+        </Card>
+      )}
+        <StatusBar style="auto" />
     </View>
   );
 }
@@ -165,5 +171,11 @@ const styles = StyleSheet.create({
   },
   groupButtons: {
     flexDirection: 'row',
-  }
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
 });
