@@ -13,7 +13,7 @@ const Stack = createNativeStackNavigator();
 function IndexRoutes() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }} >
+      <Stack.Navigator screenOptions={{ headerShown: false, animation: 'none' }}>
         <Stack.Screen name="App" component={AppRoutes} />
         <Stack.Screen name="Settings" component={Settings} />
       </Stack.Navigator>

@@ -1,6 +1,6 @@
 import React, { createContext, useState, Dispatch, SetStateAction, useContext, useCallback, useEffect } from 'react';
 import { Appearance } from 'react-native';
-import { DefaultTheme, Provider } from 'react-native-paper';
+import { DefaultTheme, Provider, ActivityIndicator } from 'react-native-paper';
 
 import { storeData, getData } from '@/utils/storage'
 
@@ -52,23 +52,23 @@ const PaperProvider: React.FC = ({ children }) => {
   useEffect(() => {
     getData(KEY_THEME)
     .then((data) => {
+      setCurrentTheme(data || 'auto')
       setLoading(false);
-      setCurrentTheme(data)
     })
   }, [])
+
+  useEffect(() => {
+    storeData(KEY_THEME, currentTheme)
+  }, [currentTheme])
 
   const getCurrenScheme = useCallback(() => {
     let schemeName: Scheme = 'auto'
 
-    console.log(currentTheme)
-
-    if(currentTheme === 'auto' || !currentTheme){
+    if(currentTheme === 'auto'){
       schemeName = colorScheme
     }else {
       schemeName = currentTheme
     }
-
-    storeData(KEY_THEME, currentTheme)
 
     return { name: colorScheme, ...themes[schemeName] };
   }, [currentTheme]) 
@@ -76,6 +76,10 @@ const PaperProvider: React.FC = ({ children }) => {
   const paperData = {
     currentTheme,
     setCurrentTheme,
+  }
+
+  if(loading){
+    return <ActivityIndicator animating={true} color='#8100b2' />
   }
 
   return (
