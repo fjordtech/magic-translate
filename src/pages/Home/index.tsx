@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Button, TextInput, Card, Paragraph, Text, FAB } from 'react-native-paper';
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image, Keyboard } from 'react-native';
 
 import api from '@/services/api'
 import { storeCard } from '@/services/history'
@@ -34,6 +34,7 @@ function Home({ navigate, theme }: any) {
 
   const findCard = async () => {
     if(!text.trim() || loading) return
+    Keyboard.dismiss()
 
     setLoading(true)
     api.get('/cards/search', {
